@@ -7,4 +7,4 @@ ws = wb.active
 ws['A1'] = 'Hello Rachel'
 ws['A2'] = 5702
 
-wb.save('sample.xlsx')
+wb.save('input.xlsx')
