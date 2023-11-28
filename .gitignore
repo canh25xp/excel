@@ -176,4 +176,5 @@ cython_debug/
 
 require.txt
 *.xlsx
+*.csv
 tmp/
