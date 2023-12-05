@@ -178,3 +178,4 @@ require.txt
 *.xlsx
 *.csv
 tmp/
+note.md
