@@ -10,7 +10,8 @@ def main(opt):
     input_file = opt.input
     output_file = opt.output
     input = pd.read_excel(input_file,skiprows=[1,2])
-    sorted_date = input.sort_values('Ngày tiếp nhận')
+    
+    input_sorted = input.sort_values('Ngày tiếp nhận', ignore_index=True)
     
     # print(input)
 
@@ -18,50 +19,53 @@ def main(opt):
     # Dates = input['Ngày tiếp nhận']
     # Cash = input['Thành tiền (đã tính miễn giảm)']
 
-    dates = sorted_date['Ngày tiếp nhận']
+    dates = input_sorted['Ngày tiếp nhận']
 
     years = dates.dt.strftime('%Y')
     months = dates.dt.strftime('%b')
     weeks = dates.dt.strftime('%a')
     days = dates.dt.strftime('%d')
 
-    money_group = sorted_date.groupby([months], sort=False)['Thành tiền (đã tính miễn giảm)'].sum()
-
-    # service_group = sorted_date.groupby('Tên gói ')['Thành tiền (đã tính miễn giảm)'].sum()
-
+    money_group = input_sorted.groupby([months], sort=False)['Thành tiền (đã tính miễn giảm)'].sum()
     total_money = money_group.cumsum()
 
     money_group.name = 'Thành tiền'
     total_money.name = 'Tổng thành tiền'
 
-    concat = pd.concat([money_group, total_money], axis=1)
+    table1 = pd.concat([money_group, total_money], axis=1)
 
-    print(months)
-    # money_group.to_excel('test.xlsx')
+    service_group = input_sorted.groupby('Nhóm dịch vụ', sort=False)[['Ngày tiếp nhận','Thành tiền (đã tính miễn giảm)']]
+    service_id_group = input_sorted.groupby('Tên gói ', sort=False)[['Ngày tiếp nhận','Thành tiền (đã tính miễn giảm)']]
 
-    # plt.figure()
-    # money_group.plot(kind='bar', legend=True)
-    # plt.show()
-    # plt.close('all')
+    # for name, value in service_id_group:
+    #     print(name)
+    #     print(value)
+                
+    plt.figure()
+    money_group.plot(kind='bar', legend=True)
+    plt.show()
+    plt.close('all')
 
     # Save as excel
     if(opt.save):
         writer = pd.ExcelWriter(output_file, engine='xlsxwriter')
+        for name, value in service_group:
+            value.to_excel(writer, sheet_name=name)
 
-        concat.to_excel(writer, sheet_name='Sheet1')
+        table1.to_excel(writer, sheet_name='Sheet1')
 
-        workbook = writer.book
+        # workbook = writer.book
 
-        chartsheet = workbook.add_chartsheet()
-        chart = workbook.add_chart({'type': 'column'})
+        # chartsheet = workbook.add_chartsheet()
+        # chart = workbook.add_chart({'type': 'column'})
 
-        chart.add_series({
-            'values': '=Sheet1!$B$2:$B$9',
-            'categories':'=Sheet1!$A$2:$A$9',
-            'name':'money'
-        })
+        # chart.add_series({
+        #     'values': '=Sheet1!$B$2:$B$9',
+        #     'categories':'=Sheet1!$A$2:$A$9',
+        #     'name':'money'
+        # })
 
-        chartsheet.set_chart(chart)
+        # chartsheet.set_chart(chart)
 
         writer.close()
         
