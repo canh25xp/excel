@@ -175,6 +175,7 @@ cython_debug/
 # personal file
 
 require.txt
+*.xls
 *.xlsx
 *.csv
 tmp/
