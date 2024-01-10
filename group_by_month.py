@@ -6,17 +6,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 output_file = 'output.xlsx'
-input_file = 'data/input.xlsx'
+input_file = 'data\DT HIS T7denT11 -23 - gui test 2.xls'
 
-input = pd.read_excel(input_file,skiprows=[1,2])
+input = pd.read_excel(input_file,skiprows=[0,1,2,3,4,5,7,8])
 
 sorted_date = input.sort_values('Ngày tiếp nhận')
 
 # print(input)
 
-# Names = input['Họ và Tên']
-# Dates = input['Ngày tiếp nhận']
-# Cash = input['Thành tiền (đã tính miễn giinput)']
+# # Names = input['Họ và Tên']
+# # Dates = input['Ngày tiếp nhận']
+# # Cash = input['Thành tiền (đã tính miễn giinput)']
 
 dates = sorted_date['Ngày tiếp nhận']
 
@@ -26,14 +26,14 @@ weeks = dates.dt.strftime('%a')
 days = dates.dt.strftime('%d')
 
 money_group = sorted_date.groupby([months], sort=False)['Thành tiền (đã tính miễn giảm)'].sum()
-total_money = money_group.cumsum()
+# total_money = money_group.cumsum()
 
-# money_group.name = 'Thành tiền'
-# total_money.name = 'Tổng thành tiền'
+# # money_group.name = 'Thành tiền'
+# # total_money.name = 'Tổng thành tiền'
 
-concat = pd.concat([money_group, total_money], axis=1)
+# concat = pd.concat([money_group, total_money], axis=1)
 
-print(money_group)
+print(money_group, money_group.sum())
 
 # plt.figure()
 graph = money_group.plot(kind='bar', legend=True)
@@ -42,7 +42,7 @@ graph.bar_label(graph.containers[0],fmt = '%d')
 
 # plt.savefig('date')
 plt.show()
-# plt.close('all')
+plt.close('all')
 
 # Save as excel
 
